@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: tdp-catalog-info
+  description: A sample catalog for Backstage
+  annotations:
+    "backstage.io/techdocs-ref": dir:.
+spec:
+  targets:
+    - ./components/tdp.yaml
+    - ./groups/default-org.yaml
+    - ./systems/tdp-system.yaml
+    - ./domains/tdp-domain.yaml
