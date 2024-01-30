@@ -7,7 +7,7 @@ We will update tap-gui deployment to have second contaner with docker that give 
 
 First we need to create secret with overlay.
 
-If dockerhub rate-limit pull requests and your contaner registry use selfsing CA you can rebuild dind with your custom CA.
+If dockerhub rate-limits pull requests and your contaner registry use selfsing CA you need rebuild dind image with your custom CA.
 
 ```
 docker build . -t your-registry.example.com/path/dind:1.0
