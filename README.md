@@ -84,5 +84,7 @@ If dockerhub rate-limit pull requests and your contaner registry use selfsing CA
 ```
 docker build . -t dindca:1.0
 ```
+Update tap-gui-dind-patch.yaml with new docker image and apply
+```
 kubectl patch deploy server -n tap-gui --patch-file tap-gui-dind-patch.yaml
-
+```
