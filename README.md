@@ -1,5 +1,6 @@
- Currently TAP 1.7.2 doesn't support techdoc generation with builder `local`. But sometimes for testing or demo purpose we would like to use local builder and local store. This repo contains workaround code snippet and step by step guide to patch-tap package.
- We will update tap-gui deployment to have second contaner with docker that give us ability to generate techdoc locally. Theoretically we can store `output` in pvc. For now it is `Emptydir` volume.
+Currently TAP 1.7.2 doesn't support techdoc generation with builder `local`. But sometimes for testing or demo purpose we would like to use local builder and local store. This repo contains workaround code snippet and step by step guide to patch-tap package.
+
+We will update tap-gui deployment to have second contaner with docker that give us ability to generate techdoc locally. Theoretically we can store `output` in pvc. For now it is `Emptydir` volume.
 
 
 tap-values.yaml snippet we need to use
