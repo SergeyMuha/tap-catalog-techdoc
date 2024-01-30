@@ -82,9 +82,10 @@ spec:
 If dockerhub rate-limit pull requests and your contaner registry use selfsing CA you can rebuild dind with your custom CA.
 
 ```
-docker build . -t dindca:1.0
+docker build . -t your-registry.example.com/path/dindca:1.0
 ```
 Update tap-gui-dind-patch.yaml with new docker image and apply
 ```
 kubectl patch deploy server -n tap-gui --patch-file tap-gui-dind-patch.yaml
 ```
+For some reason you need to reopen page after first time.
