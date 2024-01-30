@@ -5,3 +5,5 @@
 More information about the backstage catalog would be listed here.
 
 Tanzu Test Lab for TAP
+
+Easy page update-commit
