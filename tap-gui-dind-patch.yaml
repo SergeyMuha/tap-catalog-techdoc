@@ -1,0 +1,48 @@
+spec:
+  template:
+    spec:
+      securityContext:
+        # allowPrivilegeEscalation: true
+        runAsGroup: 0
+        runAsNonRoot: false
+        runAsUser: 0
+        fsGroup: 0
+      containers:
+      - args:
+        command:
+        - dockerd
+        - '--host'
+        - 'tcp://127.0.0.1:2375'
+        env:
+          - name: DOCKER_HOST
+            value: 'tcp://localhost:2375'
+        image: 'dind:1.0'
+        imagePullPolicy: IfNotPresent
+        name: dind-daemon
+        volumeMounts:
+          - mountPath: /tmp
+            name: tmp
+          - mountPath: /output
+            name: output
+          # - name: docker-socket
+          #   mountPath: /var/run/docker.sock
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        securityContext:
+          runAsUser: 0
+          privileged: true
+      - name: backstage
+        env:
+          - name: DOCKER_HOST
+            value: 'tcp://localhost:2375'
+        volumeMounts:
+          - mountPath: /tmp
+            name: tmp
+          - mountPath: /output
+            name: output
+      volumes:
+        - emptyDir: {}
+          name: tmp
+        - emptyDir: {}
+          name: output
+
