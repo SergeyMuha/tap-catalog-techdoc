@@ -2,7 +2,6 @@ spec:
   template:
     spec:
       securityContext:
-        # allowPrivilegeEscalation: true
         runAsGroup: 0
         runAsNonRoot: false
         runAsUser: 0
@@ -16,7 +15,7 @@ spec:
         env:
           - name: DOCKER_HOST
             value: 'tcp://localhost:2375'
-        image: 'dind:1.0'
+        image: 'docker:24.0.0-rc.1-dind'
         imagePullPolicy: IfNotPresent
         name: dind-daemon
         volumeMounts:
@@ -24,8 +23,6 @@ spec:
             name: tmp
           - mountPath: /output
             name: output
-          # - name: docker-socket
-          #   mountPath: /var/run/docker.sock
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         securityContext:

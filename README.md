@@ -2,6 +2,60 @@ Currently TAP 1.7.2 doesn't support techdoc generation with builder `local`. But
 
 We will update tap-gui deployment to have second contaner with docker that give us ability to generate techdoc locally. Theoretically we can store `output` in pvc. For now it is `Emptydir` volume.
 
+<details>
+<summary>Overlay YTT approach for PROD </summary>
+
+First we need to create secret with overlay
+```
+kubectl apply -f techdoc-overlay.yaml
+```
+Next update your tap-values.yaml with following snippet.
+```yaml
+tap_gui:
+....
+    techdocs:
+      generator: 
+        runIn: 'docker'
+        dockerImage: 'spotify/techdocs:v1.2.3'
+      builder: 'local'
+      publisher:
+        type: 'local'
+        local:
+          publishDirectory: '/output'
+    catalog:
+      locations:
+        - type: url
+          target: https://github.com/SergeyMuha/tap-catalog-techdoc/blob/master/catalog-info.yaml
+...
+package_overlays:
+  - name: tap-gui
+    secrets:
+      - name: techdoc-overlay
+...
+```
+Sometime dockerhub can rate-limit pull request. With dockerImage you can provide your private repo. Be aware about selfsing CA.
+
+We need to pause reconcilation for tap-gui package.
+```bash 
+kubectl patch pkgi tap -n tap-install -p '{"spec":{"paused":true}}' --type=merge
+kubectl patch pkgi tap-gui -n tap-install -p '{"spec":{"paused":true}}' --type=merge
+```
+
+If dockerhub rate-limit pull requests and your contaner registry use selfsing CA you can rebuild dind with your custom CA.
+
+```
+docker build . -t your-registry.example.com/path/dind:1.0
+```
+Update tap-gui-dind-patch.yaml with new docker image and apply
+```
+kubectl patch deploy server -n tap-gui --patch-file tap-gui-dind-patch.yaml
+```
+For some reason you need to reopen page after first time.
+
+</details>
+
+<details>
+<summary>Manual approach for DEV </summary>
 
 tap-values.yaml snippet we need to use
 ```yaml
@@ -24,7 +78,7 @@ tap_gui:
 ```
 Sometime dockerhub can rate-limit pull request. With dockerImage you can provide your private repo. Be aware about selfsing CA.
 
-We need to pause reconcilation for tap-gui package. Later we can implement ytt overlay.
+We need to pause reconcilation for tap-gui package.
 ```bash 
 kubectl patch pkgi tap -n tap-install -p '{"spec":{"paused":true}}' --type=merge
 kubectl patch pkgi tap-gui -n tap-install -p '{"spec":{"paused":true}}' --type=merge
@@ -82,10 +136,12 @@ spec:
 If dockerhub rate-limit pull requests and your contaner registry use selfsing CA you can rebuild dind with your custom CA.
 
 ```
-docker build . -t your-registry.example.com/path/dindca:1.0
+docker build . -t your-registry.example.com/path/dind:1.0
 ```
 Update tap-gui-dind-patch.yaml with new docker image and apply
 ```
 kubectl patch deploy server -n tap-gui --patch-file tap-gui-dind-patch.yaml
 ```
 For some reason you need to reopen page after first time.
+
+</details>
