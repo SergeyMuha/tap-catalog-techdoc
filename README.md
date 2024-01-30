@@ -5,11 +5,20 @@ We will update tap-gui deployment to have second contaner with docker that give 
 <details>
 <summary>Overlay YTT approach for PROD </summary>
 
-First we need to create secret with overlay
+First we need to create secret with overlay.
+
+If dockerhub rate-limit pull requests and your contaner registry use selfsing CA you can rebuild dind with your custom CA.
+
+```
+docker build . -t your-registry.example.com/path/dind:1.0
+```
+Update techdoc-overlay.yaml with new docker image and apply it
+
 ```
 kubectl apply -f techdoc-overlay.yaml
 ```
-Next update your tap-values.yaml with following snippet.
+
+Next update your tap-values.yaml with following snippet. With dockerImage you can provide your private registry.
 ```yaml
 tap_gui:
 ....
@@ -33,24 +42,11 @@ package_overlays:
       - name: techdoc-overlay
 ...
 ```
-Sometime dockerhub can rate-limit pull request. With dockerImage you can provide your private repo. Be aware about selfsing CA.
-
-We need to pause reconcilation for tap-gui package.
-```bash 
-kubectl patch pkgi tap -n tap-install -p '{"spec":{"paused":true}}' --type=merge
-kubectl patch pkgi tap-gui -n tap-install -p '{"spec":{"paused":true}}' --type=merge
-```
-
-If dockerhub rate-limit pull requests and your contaner registry use selfsing CA you can rebuild dind with your custom CA.
 
 ```
-docker build . -t your-registry.example.com/path/dind:1.0
+tanzu package installed update tap -p tap.tanzu.vmware.com -v 1.7.2 --values-file path-to-file/tap-values.yaml -n tap-install
 ```
-Update tap-gui-dind-patch.yaml with new docker image and apply
-```
-kubectl patch deploy server -n tap-gui --patch-file tap-gui-dind-patch.yaml
-```
-For some reason you need to reopen page after first time.
+For some reason you need to reopen page after first time generation.
 
 </details>
 
