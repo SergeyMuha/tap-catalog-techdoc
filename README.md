@@ -15,7 +15,7 @@ docker build . -t your-registry.example.com/path/dind:1.0
 Update techdoc-overlay.yaml with new docker image and apply it
 
 ```
-kubectl apply -f [techdoc-overlay.yaml](https://raw.githubusercontent.com/SergeyMuha/tap-catalog-techdoc/master/techdoc-overlay.yaml)
+kubectl apply -f https://raw.githubusercontent.com/SergeyMuha/tap-catalog-techdoc/master/techdoc-overlay.yaml
 ```
 
 Next update your tap-values.yaml with following snippet. With dockerImage you can provide your private registry.
